@@ -1,0 +1,68 @@
+# Starship config
+# Two-line prompt: info on top, cursor on bottom
+
+format = """
+$directory$git_branch$git_status$nodejs$python$rust$golang$docker_context$cmd_duration
+$character"""
+
+# Directory
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+
+# Git branch — plain text, no icon
+[git_branch]
+format = " on [$branch]($style)"
+style = "bold purple"
+symbol = ""
+
+# Git status — shows modified, staged, untracked counts
+[git_status]
+format = '([ \[$all_status$ahead_behind\]]($style) )'
+style = "bold yellow"
+conflicted = "${count}cf"
+ahead = "${count}ah"
+behind = "${count}bh"
+diverged = "${ahead_count}ah ${behind_count}bh"
+modified = "${count}m"
+staged = "${count}s"
+untracked = "${count}u"
+deleted = "${count}d"
+
+# Language versions — only shown when in relevant project
+[nodejs]
+format = " [node $version]($style)"
+style = "bold green"
+symbol = ""
+
+[python]
+format = " [py $version]($style)"
+style = "bold yellow"
+symbol = ""
+
+[rust]
+format = " [rs $version]($style)"
+style = "bold red"
+symbol = ""
+
+[golang]
+format = " [go $version]($style)"
+style = "bold cyan"
+symbol = ""
+
+[docker_context]
+format = " [docker $context]($style)"
+style = "bold blue"
+symbol = ""
+
+# Command duration — shows if command took longer than 2s
+[cmd_duration]
+min_time = 2_000
+format = " [$duration]($style)"
+style = "bold yellow"
+
+# Prompt character — green ❯ on success, red ❯ on failure
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"

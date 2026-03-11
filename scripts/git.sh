@@ -41,6 +41,15 @@ git config -f "$LOCAL" user.name "$name"
 git config -f "$LOCAL" user.email "$email"
 echo "Saved identity to ~/.gitconfig.local"
 
+# GitHub CLI (for auth — password auth not supported by GitHub)
+if command -v gh &>/dev/null; then
+    echo "gh already installed"
+else
+    echo "Installing gh..."
+    sudo apt install -y gh
+fi
+echo "ACTION: run 'gh auth login' to authenticate with GitHub"
+
 ln -sf "$DOTFILES/git/.gitconfig" "$HOME/.gitconfig"
 ln -sf "$DOTFILES/git/.gitignore_global" "$HOME/.gitignore_global"
 echo "Linked .gitconfig and .gitignore_global"

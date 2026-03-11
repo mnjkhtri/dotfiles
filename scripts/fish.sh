@@ -42,6 +42,10 @@ mkdir -p "$FISH_CONFIG/conf.d" "$FISH_CONFIG/functions"
 ln -sf "$DOTFILES/fish/config.fish" "$FISH_CONFIG/config.fish"
 echo "Linked config.fish"
 
+mkdir -p "$HOME/.config"
+ln -sf "$DOTFILES/starship/starship.toml" "$HOME/.config/starship.toml"
+echo "Linked starship.toml"
+
 if ls "$DOTFILES/fish/conf.d"/*.fish &>/dev/null 2>&1; then
     for f in "$DOTFILES/fish/conf.d"/*.fish; do
         ln -sf "$f" "$FISH_CONFIG/conf.d/$(basename "$f")"

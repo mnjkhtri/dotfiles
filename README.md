@@ -4,11 +4,25 @@ My personal development environment. Clone and run the scripts to get up and run
 
 ## Setup
 
+### macOS
+
+```bash
+# Install Homebrew (includes git and Xcode CLT)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+```
+
+### Linux
+
 ```bash
 sudo apt install -y git
 git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
+
+---
 
 ### 1. Git
 

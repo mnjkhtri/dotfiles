@@ -17,6 +17,7 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
 LOCAL="$HOME/.gitconfig.local"
+OS="$(uname -s)"
 
 current_name=$(git config -f "$LOCAL" user.name 2>/dev/null || echo "")
 current_email=$(git config -f "$LOCAL" user.email 2>/dev/null || echo "")
@@ -46,7 +47,11 @@ if command -v gh &>/dev/null; then
     echo "gh already installed"
 else
     echo "Installing gh..."
-    sudo apt install -y gh
+    case "$OS" in
+        Darwin) brew install gh ;;
+        Linux)  sudo apt install -y gh ;;
+        *) echo "Unsupported OS: $OS. Install gh manually: https://cli.github.com"; exit 1 ;;
+    esac
 fi
 echo "ACTION: run 'gh auth login' to authenticate with GitHub"
 

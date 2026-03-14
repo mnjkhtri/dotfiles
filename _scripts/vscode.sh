@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# scripts/vscode.sh
+# _scripts/vscode.sh
 #
 # Makes VSCode match the state defined in this repo. Every time.
 #

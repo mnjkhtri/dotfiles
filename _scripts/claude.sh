@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# scripts/claude.sh
+# _scripts/claude.sh
 #
 # Sets up Claude Code:
 #   1. Installs Claude Code CLI if not already installed

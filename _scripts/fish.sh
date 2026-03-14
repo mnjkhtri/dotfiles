@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# scripts/fish.sh
+# _scripts/fish.sh
 #
 # Sets up fish shell:
 #   1. Installs fish if not already installed

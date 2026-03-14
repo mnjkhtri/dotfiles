@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# scripts/git.sh
+# _scripts/git.sh
 #
 # Sets up git configuration:
 #   1. Asks for your name and email (hit enter to keep current value)

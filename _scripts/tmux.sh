@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# scripts/tmux.sh
+# _scripts/tmux.sh
 #
 # Sets up tmux:
 #   1. Installs tmux if not already installed

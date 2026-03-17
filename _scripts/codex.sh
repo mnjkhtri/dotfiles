@@ -7,6 +7,8 @@ set -euo pipefail
 # Sets up OpenAI Codex CLI:
 #   1. Installs Node.js if not already installed
 #   2. Installs Codex CLI via npm if not already installed
+#   3. Symlinks config into place:
+#        codex/config.toml → ~/.codex/config.toml
 #
 # After running, authenticate with: codex
 #
@@ -14,12 +16,20 @@ set -euo pipefail
 #   ./_scripts/codex.sh
 # ---------------------------------------------------------------------------
 
+DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+CODEX_DIR="$HOME/.codex"
+
 step() {
     echo "==> $1"
 }
 
 done_step() {
     echo "[done] $1"
+}
+
+link_file() {
+    ln -sf "$1" "$2"
+    done_step "linked $(basename "$2")"
 }
 
 # Codex depends on Node.js and npm.
@@ -50,6 +60,15 @@ else
     step "Installing Codex CLI"
     sudo npm install -g @openai/codex
     done_step "installed Codex CLI"
+fi
+
+# Link tracked Codex config into the user config directory.
+mkdir -p "$CODEX_DIR"
+done_step "prepared Codex config directory"
+
+if [ -f "$DOTFILES/codex/config.toml" ]; then
+    step "Linking Codex config"
+    link_file "$DOTFILES/codex/config.toml" "$CODEX_DIR/config.toml"
 fi
 
 echo ""

@@ -32,6 +32,11 @@ if [ -f "$DOTFILES/claude/CLAUDE.md" ]; then
     echo "Linked CLAUDE.md"
 fi
 
+if [ -f "$DOTFILES/claude/settings.json" ]; then
+    ln -sf "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
+    echo "Linked settings.json"
+fi
+
 echo ""
 echo "To authenticate:"
 echo "  claude"

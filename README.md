@@ -1,28 +1,19 @@
 # dotfiles
 
-My personal development environment. Clone and run the scripts to get up and running on a fresh machine.
+My personal Linux development environment. Clone the repo and run the scripts to get up and running on a fresh machine.
 
 ## Setup
 
-### macOS
+Tested for Debian/Ubuntu-style systems with `apt`.
 
 ```bash
-# Install Homebrew (includes git and Xcode CLT)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
+sudo apt update
+sudo apt install -y git curl wget
 git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-### Linux
-
-```bash
-sudo apt install -y git
-git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
-cd ~/dotfiles
-```
-
----
+## Install
 
 ### 1. Git
 
@@ -31,26 +22,33 @@ cd ~/dotfiles
 gh auth login
 ```
 
-### 2. Fish + Starship
+### 2. Shell + Tmux + Kitty
 
-```bash
-./_scripts/fish.sh
-```
+Installs and links:
 
-### 3. Tmux
+- fish
+- starship
+- tmux
+- kitty
 
 ```bash
 ./_scripts/tmux.sh
 ```
 
-### 4. VSCode
+### 3. VS Code
 
 ```bash
 ./_scripts/vscode.sh
 ```
 
-### 5. Claude
+### 4. Claude
 
 ```bash
 ./_scripts/claude.sh
+```
+
+### 5. Codex
+
+```bash
+./_scripts/codex.sh
 ```

@@ -14,27 +14,42 @@ set -euo pipefail
 #   ./_scripts/codex.sh
 # ---------------------------------------------------------------------------
 
+step() {
+    echo "==> $1"
+}
+
+done_step() {
+    echo "[done] $1"
+}
+
+# Codex depends on Node.js and npm.
+step "Ensuring Node.js is installed"
 if command -v node &>/dev/null; then
-    echo "Node.js already installed"
+    done_step "Node.js already installed"
 else
-    echo "Installing Node.js..."
+    step "Installing Node.js"
     curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo bash -
     sudo apt install -y nodejs
-    echo "Node.js installed"
+    done_step "installed Node.js"
 fi
 
+step "Ensuring npm is installed"
 if ! command -v npm &>/dev/null; then
-    echo "Installing npm..."
+    step "Installing npm"
     sudo apt install -y npm
-    echo "npm installed"
+    done_step "installed npm"
+else
+    done_step "npm already installed"
 fi
 
+# Install the CLI after the runtime is available.
+step "Ensuring Codex CLI is installed"
 if command -v codex &>/dev/null; then
-    echo "Codex CLI already installed"
+    done_step "Codex CLI already installed"
 else
-    echo "Installing Codex CLI..."
+    step "Installing Codex CLI"
     sudo npm install -g @openai/codex
-    echo "Codex CLI installed"
+    done_step "installed Codex CLI"
 fi
 
 echo ""

@@ -7,16 +7,29 @@ set -euo pipefail
 # Makes VSCode match the state defined in this repo. Every time.
 #
 #   1. Installs VSCode if not already installed
-#   2. Syncs extensions to match vscode/extensions.txt exactly:
+#   2. Syncs extensions to match vscode/extensions.txt exactly
 #   3. Symlinks config into place:
 #        vscode/settings.json    → $VSCODE_USER/settings.json
 #
 # Usage:
-#   ./scripts/vscode.sh
+#   ./_scripts/vscode.sh
 # ---------------------------------------------------------------------------
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
 OS="$(uname -s)"
+
+step() {
+    echo "==> $1"
+}
+
+done_step() {
+    echo "[done] $1"
+}
+
+link_file() {
+    ln -sf "$1" "$2"
+    done_step "linked $(basename "$2")"
+}
 
 # Resolve VSCode user config path per OS
 case "$OS" in
@@ -25,10 +38,12 @@ case "$OS" in
     *)      echo "Unsupported OS: $OS"; exit 1 ;;
 esac
 
+# Install VS Code before syncing extensions or settings.
+step "Ensuring VS Code is installed"
 if command -v code &>/dev/null; then
-    echo "VSCode already installed"
+    done_step "VS Code already installed"
 else
-    echo "Installing VSCode..."
+    step "Installing VS Code"
     case "$OS" in
         Darwin)
             brew install --cask visual-studio-code
@@ -40,10 +55,11 @@ else
             rm -f /tmp/vscode.deb
             ;;
     esac
-    echo "VSCode installed"
+    done_step "installed VS Code"
 fi
 
 if [ -f "$DOTFILES/vscode/extensions.txt" ]; then
+    step "Syncing VS Code extensions"
     # Read desired extensions from file (lowercase for comparison)
     desired=()
     while IFS= read -r ext; do
@@ -61,21 +77,25 @@ if [ -f "$DOTFILES/vscode/extensions.txt" ]; then
     # Install missing
     for ext in "${desired[@]}"; do
         if ! printf '%s\n' "${installed[@]}" | grep -qx "$ext"; then
-            echo "  Installing $ext..."
+            echo "Installing $ext..."
             code --install-extension "$ext" --force
+            done_step "installed $ext"
         fi
     done
 
     # Remove extras
     for ext in "${installed[@]}"; do
         if ! printf '%s\n' "${desired[@]}" | grep -qx "$ext"; then
-            code --uninstall-extension "$ext" 2>/dev/null && echo "  - $ext" || echo "  ✗ $ext"
+            if code --uninstall-extension "$ext" 2>/dev/null; then
+                done_step "removed $ext"
+            fi
         fi
     done
 
-    echo "Extensions synced"
+    done_step "synced extensions"
 fi
 
 mkdir -p "$VSCODE_USER"
-ln -sf "$DOTFILES/vscode/settings.json" "$VSCODE_USER/settings.json"
-echo "Linked settings.json"
+done_step "prepared VS Code settings directory"
+step "Linking VS Code settings"
+link_file "$DOTFILES/vscode/settings.json" "$VSCODE_USER/settings.json"

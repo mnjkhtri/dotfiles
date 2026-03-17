@@ -12,29 +12,47 @@ set -euo pipefail
 # After running, authenticate with: claude
 #
 # Usage:
-#   ./scripts/claude.sh
+#   ./_scripts/claude.sh
 # ---------------------------------------------------------------------------
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+CLAUDE_DIR="$HOME/.claude"
 
+step() {
+    echo "==> $1"
+}
+
+done_step() {
+    echo "[done] $1"
+}
+
+link_file() {
+    ln -sf "$1" "$2"
+    done_step "linked $(basename "$2")"
+}
+
+# Install Claude CLI before linking its global config.
+step "Ensuring Claude Code is installed"
 if command -v claude &>/dev/null; then
-    echo "Claude Code already installed"
+    done_step "Claude Code already installed"
 else
-    echo "Installing Claude Code..."
+    step "Installing Claude Code"
     curl -fsSL https://claude.ai/install.sh | bash
-    echo "Claude Code installed"
+    done_step "installed Claude Code"
 fi
 
-mkdir -p "$HOME/.claude"
+mkdir -p "$CLAUDE_DIR"
+done_step "prepared Claude config directory"
 
 if [ -f "$DOTFILES/claude/CLAUDE.md" ]; then
-    ln -sf "$DOTFILES/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
-    echo "Linked CLAUDE.md"
+    # Link global instructions if they are present in the repo.
+    step "Linking Claude instructions"
+    link_file "$DOTFILES/claude/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 fi
 
 if [ -f "$DOTFILES/claude/settings.json" ]; then
-    ln -sf "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
-    echo "Linked settings.json"
+    step "Linking Claude settings"
+    link_file "$DOTFILES/claude/settings.json" "$CLAUDE_DIR/settings.json"
 fi
 
 echo ""

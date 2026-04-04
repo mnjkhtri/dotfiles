@@ -41,28 +41,8 @@ Installs and links:
 ./_scripts/vscode.sh
 ```
 
-## Claude Code
-
-Tracked config for Claude, Codex, and OpenCode now lives under:
-
-- `claude-code/claude/`
-- `claude-code/codex/`
-- `claude-code/opencode/`
-
-Install and link all AI tools with:
+### 4. Claude Code
 
 ```bash
 ./_scripts/claude-code.sh
 ```
-
-You can also target specific tools:
-
-```bash
-./_scripts/claude-code.sh claude
-```
-
-This script:
-
-- installs Claude Code, Codex, and OpenCode if needed
-- links tracked config from `claude-code/`
-- prompts you to choose a tool if you run it with no arguments

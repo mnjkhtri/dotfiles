@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "deny": [
+      "Write(~/.claude/settings.json)",
+      "Write(~/.claude/settings.local.json)",
+      "Write(~/.claude/CLAUDE.md)",
+      "Write(./.claude/settings.json)",
+      "Write(./.claude/settings.local.json)",
+      "Write(./.claude/CLAUDE.md)"
+    ]
+  }
+}

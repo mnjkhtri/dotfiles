@@ -1,0 +1,10 @@
+# Tracked Codex CLI config.
+# Keep project roots writable, but prevent Codex from editing its own config.
+
+default_permissions = "no-self-edit"
+
+[permissions.no-self-edit.filesystem]
+"/home/mike/.codex" = "none"
+
+[permissions.no-self-edit.filesystem.":project_roots"]
+"." = "write"

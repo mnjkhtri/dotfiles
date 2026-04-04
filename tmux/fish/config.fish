@@ -28,3 +28,6 @@ if status is-interactive
     abbr -a grbi git rebase --interactive              # interactive rebase
     abbr -a glo  git log --oneline --graph --decorate  # visual branch history
 end
+
+# opencode
+fish_add_path /home/mike/.opencode/bin

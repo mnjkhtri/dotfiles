@@ -46,3 +46,9 @@ Installs and links:
 ```bash
 ./_scripts/claude-code.sh
 ```
+
+### 5. Obsidian
+
+```bash
+./_scripts/obsidian.sh
+```

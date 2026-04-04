@@ -29,6 +29,23 @@ link_file() {
     done_step "linked $(basename "$2")"
 }
 
+pin_to_gnome_dash() {
+    local desktop_file="$1"
+
+    if ! command -v gsettings &>/dev/null; then
+        return
+    fi
+
+    CURRENT_FAVORITES="$(gsettings get org.gnome.shell favorite-apps)"
+    if echo "$CURRENT_FAVORITES" | grep -q "$desktop_file"; then
+        done_step "$(basename "$desktop_file" .desktop) already pinned to dash"
+    else
+        gsettings set org.gnome.shell favorite-apps \
+            "$(echo "$CURRENT_FAVORITES" | sed "s/]$/, '$desktop_file']/")"
+        done_step "pinned $(basename "$desktop_file" .desktop) to GNOME dash"
+    fi
+}
+
 # Install terminal tooling first so the linked config works immediately.
 step "Installing tmux dependencies"
 install_apt_package tmux
@@ -113,13 +130,7 @@ if command -v gsettings &>/dev/null; then
     gsettings set org.gnome.desktop.default-applications.terminal exec kitty
     gsettings set org.gnome.desktop.default-applications.terminal exec-arg ''
     done_step "set kitty as GNOME default terminal"
-
-    CURRENT_FAVORITES=$(gsettings get org.gnome.shell favorite-apps)
-    if echo "$CURRENT_FAVORITES" | grep -q "kitty.desktop"; then
-        done_step "kitty already pinned to dash"
-    else
-        gsettings set org.gnome.shell favorite-apps \
-            "$(echo "$CURRENT_FAVORITES" | sed "s/]$/, 'kitty.desktop']/")"
-        done_step "pinned kitty to GNOME dash"
-    fi
 fi
+
+step "Pinning kitty to GNOME dash"
+pin_to_gnome_dash "kitty.desktop"

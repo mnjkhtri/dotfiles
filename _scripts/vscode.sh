@@ -17,6 +17,7 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
 OS="$(uname -s)"
+SUPPORTED_LINUX_ARCHES="amd64 arm64"
 
 step() {
     echo "==> $1"
@@ -29,6 +30,23 @@ done_step() {
 link_file() {
     ln -sf "$1" "$2"
     done_step "linked $(basename "$2")"
+}
+
+pin_to_gnome_dash() {
+    local desktop_file="$1"
+
+    if ! command -v gsettings &>/dev/null; then
+        return
+    fi
+
+    CURRENT_FAVORITES="$(gsettings get org.gnome.shell favorite-apps)"
+    if echo "$CURRENT_FAVORITES" | grep -q "$desktop_file"; then
+        done_step "$(basename "$desktop_file" .desktop) already pinned to dash"
+    else
+        gsettings set org.gnome.shell favorite-apps \
+            "$(echo "$CURRENT_FAVORITES" | sed "s/]$/, '$desktop_file']/")"
+        done_step "pinned $(basename "$desktop_file" .desktop) to GNOME dash"
+    fi
 }
 
 # Resolve VSCode user config path per OS
@@ -50,6 +68,14 @@ else
             ;;
         Linux)
             ARCH=$(dpkg --print-architecture)
+            case "$ARCH" in
+                amd64|arm64) ;;
+                *)
+                    echo "Unsupported architecture for automatic VS Code install: $ARCH"
+                    echo "Supported Linux architectures: $SUPPORTED_LINUX_ARCHES"
+                    exit 1
+                    ;;
+            esac
             wget -qO /tmp/vscode.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
             sudo dpkg -i /tmp/vscode.deb || sudo apt install -f -y
             rm -f /tmp/vscode.deb
@@ -99,3 +125,6 @@ mkdir -p "$VSCODE_USER"
 done_step "prepared VS Code settings directory"
 step "Linking VS Code settings"
 link_file "$DOTFILES/vscode/settings.json" "$VSCODE_USER/settings.json"
+
+step "Pinning VS Code to GNOME dash"
+pin_to_gnome_dash "code.desktop"

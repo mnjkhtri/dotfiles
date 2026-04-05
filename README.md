@@ -17,7 +17,7 @@ cd ~/dotfiles
 
 ### macOS
 
-Homebrew is required for the macOS-supported scripts (`git` and `obsidian`).
+Homebrew is required for the macOS-supported scripts (`git`, `claude-code`, and `obsidian`).
 
 ```bash
 command -v brew >/dev/null 2>&1 || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -35,7 +35,7 @@ Support is based on the current script behavior.
 | `_scripts/git.sh` | ✅ | ✅ | ✅ |
 | `_scripts/tmux.sh` | ✅ | ✅ | ❌ |
 | `_scripts/vscode.sh` | ✅ | ✅ | ❌ |
-| `_scripts/claude-code.sh` | ✅ | ✅ | ❌ |
+| `_scripts/claude-code.sh` | ✅ | ✅ | ✅ |
 | `_scripts/obsidian.sh` | ✅ | ✅ | ✅ |
 
 `Linux` here means Debian/Ubuntu-style systems with `apt`; `✅` means supported and `❌` means not supported.
@@ -72,6 +72,15 @@ Installs and links:
 
 ```bash
 ./_scripts/claude-code.sh
+```
+
+If you use both Claude Code and Codex, you can also add the official Codex plugin inside Claude Code:
+
+```text
+/plugin marketplace add openai/codex-plugin-cc
+/plugin install codex@openai-codex
+/reload-plugins
+/codex:setup
 ```
 
 ### 5. Obsidian

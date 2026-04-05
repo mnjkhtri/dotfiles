@@ -8,21 +8,22 @@ This repo is primarily built around Debian/Ubuntu-style Linux systems with `apt`
 
 ## Platform Support
 
-Tested:
+Support is based on the current script behavior.
 
-- Linux: Debian/Ubuntu-style systems with `apt`
-- Linux architectures: `amd64`, `arm64` where the installer explicitly checks arch
-- macOS: supported for `git` and `obsidian`
+| Script | Linux `amd64` | Linux `arm64` | macOS | Clear Reject |
+| --- | --- | --- | --- | --- |
+| `_scripts/git.sh` | Supported | Supported | Supported | Rejects other OSes |
+| `_scripts/tmux.sh` | Supported | Supported | Not supported | macOS is not handled by the script |
+| `_scripts/vscode.sh` | Supported | Supported | Not supported | Rejects Linux architectures outside `amd64` and `arm64` |
+| `_scripts/claude-code.sh` | Supported | Supported | Not supported | Rejects all non-Linux OSes |
+| `_scripts/obsidian.sh` | Supported | Supported | Supported | Rejects other OSes and rejects Linux architectures outside `amd64` and `arm64` |
 
-Current script support:
+Notes:
 
-- `_scripts/git.sh`: Linux and macOS
-- `_scripts/tmux.sh`: Linux only
-- `_scripts/vscode.sh`: Linux only, `amd64` and `arm64`
-- `_scripts/claude-code.sh`: Linux only
-- `_scripts/obsidian.sh`: Linux and macOS, with Linux auto-install on `amd64` and `arm64`
-
-If a script does not mention macOS support, assume Linux is the target.
+- `Linux` here means Debian/Ubuntu-style systems with `apt`.
+- When a script uses `apt` but does not check architecture explicitly, the README treats both Linux `amd64` and Linux `arm64` as supported by script logic.
+- `Not supported` means the script does not provide a macOS path.
+- `Clear Reject` means the script explicitly exits for that OS or architecture.
 
 ```bash
 sudo apt update
@@ -49,7 +50,8 @@ Installs and links:
 - tmux
 - kitty
 
-Linux only.
+Supported: Linux `amd64`, Linux `arm64`.
+Not supported: macOS.
 
 ```bash
 ./_scripts/tmux.sh
@@ -57,7 +59,8 @@ Linux only.
 
 ### 3. VS Code
 
-Linux only. Automatic install currently supports `amd64` and `arm64`.
+Supported: Linux `amd64`, Linux `arm64`.
+Clear reject: Linux architectures outside `amd64` and `arm64`, and macOS.
 
 ```bash
 ./_scripts/vscode.sh
@@ -65,7 +68,8 @@ Linux only. Automatic install currently supports `amd64` and `arm64`.
 
 ### 4. Claude Code / Codex / OpenCode
 
-Linux only.
+Supported: Linux `amd64`, Linux `arm64`.
+Clear reject: macOS and other non-Linux OSes.
 
 ```bash
 ./_scripts/claude-code.sh
@@ -73,7 +77,8 @@ Linux only.
 
 ### 5. Obsidian
 
-Linux and macOS. Linux automatic install currently supports `amd64` and `arm64`.
+Supported: Linux `amd64`, Linux `arm64`, and macOS.
+Clear reject: Linux architectures outside `amd64` and `arm64`, and other non-Linux OSes.
 
 ```bash
 ./_scripts/obsidian.sh

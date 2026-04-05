@@ -189,15 +189,6 @@ print_auth_instructions() {
     if [ "${INSTALL_OPENCODE:-0}" -eq 1 ]; then
         echo "  opencode"
     fi
-
-    if command -v claude &>/dev/null && command -v codex &>/dev/null; then
-        echo ""
-        echo "To install the Codex plugin inside Claude Code:"
-        echo "  /plugin marketplace add openai/codex-plugin-cc"
-        echo "  /plugin install codex@openai-codex"
-        echo "  /reload-plugins"
-        echo "  /codex:setup"
-    fi
 }
 
 INSTALL_CLAUDE=0

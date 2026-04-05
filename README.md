@@ -74,15 +74,6 @@ Installs and links:
 ./_scripts/claude-code.sh
 ```
 
-If you use both Claude Code and Codex, you can also add the official Codex plugin inside Claude Code:
-
-```text
-/plugin marketplace add openai/codex-plugin-cc
-/plugin install codex@openai-codex
-/reload-plugins
-/codex:setup
-```
-
 ### 5. Obsidian
 
 ```bash

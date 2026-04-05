@@ -74,13 +74,6 @@ Installs and links:
 ./_scripts/claude-code.sh
 ```
 
-This also links global instruction files from the repo:
-
-- `claude-code/shared/AI.md` -> `~/.claude/CLAUDE.md`
-- `claude-code/shared/AI.md` -> `~/.codex/AGENTS.md`
-- `claude-code/shared/AI.md` -> `~/.config/opencode/AGENTS.md`
-- `claude-code/codex/config.toml` -> `~/.codex/config.toml`
-
 ### 5. Obsidian
 
 ```bash

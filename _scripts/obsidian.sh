@@ -89,6 +89,23 @@ if [ "${1:-}" != "" ]; then
         cp -f "$DOTFILES/obsidian/.obsidian.vimrc" "$VAULT_PATH/.obsidian.vimrc"
         done_step "synced Obsidian vim config"
     fi
+
+    if [ -f "$TARGET_DIR/community-plugins.json" ]; then
+        echo ""
+        echo "Manual step required:"
+        echo "  Open Obsidian -> Settings -> Community plugins"
+        echo "  Turn off Restricted Mode"
+        echo "  Install these plugins:"
+        python3 - "$TARGET_DIR/community-plugins.json" <<'PYTHON'
+import json
+import sys
+from pathlib import Path
+
+plugins = json.loads(Path(sys.argv[1]).read_text())
+for plugin in plugins:
+    print(f"    - {plugin}")
+PYTHON
+    fi
 else
     echo ""
     echo "To sync the tracked vault config into a vault:"

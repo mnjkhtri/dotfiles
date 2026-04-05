@@ -20,8 +20,8 @@ cd ~/dotfiles
 Homebrew is required for the macOS-supported scripts (`git` and `obsidian`).
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew install git wget
+command -v brew >/dev/null 2>&1 || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install git
 git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```

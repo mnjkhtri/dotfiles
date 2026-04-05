@@ -31,6 +31,17 @@ done_step() {
     echo "[done] $1"
 }
 
+require_homebrew() {
+    if command -v brew &>/dev/null; then
+        return
+    fi
+
+    echo "Homebrew is required on macOS but was not found."
+    echo "Install it first:"
+    echo '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+    exit 1
+}
+
 pin_to_gnome_dash() {
     local desktop_file="$1"
 
@@ -54,6 +65,7 @@ if command -v obsidian &>/dev/null; then
 else
     case "$OS" in
         Darwin)
+            require_homebrew
             step "Installing Obsidian"
             brew install --cask obsidian
             ;;

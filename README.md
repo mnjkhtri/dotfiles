@@ -6,6 +6,26 @@ My personal development environment setup. Clone the repo and run the scripts to
 
 This repo is primarily built around Debian/Ubuntu-style Linux systems with `apt`.
 
+### Linux
+
+```bash
+sudo apt update
+sudo apt install -y git curl wget
+git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+```
+
+### macOS
+
+Homebrew is required for the macOS-supported scripts (`git` and `obsidian`).
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install git wget
+git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+```
+
 ## Platform Support
 
 Support is based on the current script behavior.
@@ -19,13 +39,6 @@ Support is based on the current script behavior.
 | `_scripts/obsidian.sh` | ✅ | ✅ | ✅ |
 
 `Linux` here means Debian/Ubuntu-style systems with `apt`; `✅` means supported and `❌` means not supported.
-
-```bash
-sudo apt update
-sudo apt install -y git curl wget
-git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
-cd ~/dotfiles
-```
 
 ## Install
 

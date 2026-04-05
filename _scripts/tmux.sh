@@ -2,6 +2,7 @@
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+OS="$(uname -s)"
 FISH_CONFIG="$HOME/.config/fish"
 KITTY_CONFIG="$HOME/.config/kitty"
 
@@ -29,6 +30,16 @@ link_file() {
     done_step "linked $(basename "$2")"
 }
 
+require_supported_os() {
+    case "$OS" in
+        Linux) ;;
+        *)
+            echo "Unsupported OS: $OS"
+            exit 1
+            ;;
+    esac
+}
+
 pin_to_gnome_dash() {
     local desktop_file="$1"
 
@@ -45,6 +56,8 @@ pin_to_gnome_dash() {
         done_step "pinned $(basename "$desktop_file" .desktop) to GNOME dash"
     fi
 }
+
+require_supported_os
 
 # Install terminal tooling first so the linked config works immediately.
 step "Installing tmux dependencies"

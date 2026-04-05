@@ -19,6 +19,10 @@ DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
 LOCAL="$HOME/.gitconfig.local"
 OS="$(uname -s)"
 
+if [ "$OS" = "Darwin" ]; then
+    PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+fi
+
 step() {
     echo "==> $1"
 }
@@ -30,6 +34,17 @@ done_step() {
 link_file() {
     ln -sf "$1" "$2"
     done_step "linked $(basename "$2")"
+}
+
+require_homebrew() {
+    if command -v brew &>/dev/null; then
+        return
+    fi
+
+    echo "Homebrew is required on macOS but was not found."
+    echo "Install it first:"
+    echo '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+    exit 1
 }
 
 current_name=$(git config -f "$LOCAL" user.name 2>/dev/null || echo "")
@@ -64,7 +79,10 @@ if command -v gh &>/dev/null; then
 else
     step "Installing gh"
     case "$OS" in
-        Darwin) brew install gh ;;
+        Darwin)
+            require_homebrew
+            brew install gh
+            ;;
         Linux)  sudo apt install -y gh ;;
         *) echo "Unsupported OS: $OS. Install gh manually: https://cli.github.com"; exit 1 ;;
     esac

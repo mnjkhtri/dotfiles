@@ -16,6 +16,7 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+OS="$(uname -s)"
 SUPPORTED_LINUX_ARCHES="amd64 arm64"
 
 step() {
@@ -29,6 +30,16 @@ done_step() {
 link_file() {
     ln -sf "$1" "$2"
     done_step "linked $(basename "$2")"
+}
+
+require_supported_os() {
+    case "$OS" in
+        Linux) ;;
+        *)
+            echo "Unsupported OS: $OS"
+            exit 1
+            ;;
+    esac
 }
 
 pin_to_gnome_dash() {
@@ -50,13 +61,15 @@ pin_to_gnome_dash() {
 
 VSCODE_USER="$HOME/.config/Code/User"
 
+require_supported_os
+
 # Install VS Code before syncing extensions or settings.
 step "Ensuring VS Code is installed"
 if command -v code &>/dev/null; then
     done_step "VS Code already installed"
 else
     step "Installing VS Code"
-    ARCH=$(dpkg --print-architecture)
+    ARCH="$(dpkg --print-architecture)"
     case "$ARCH" in
         amd64|arm64) ;;
         *)

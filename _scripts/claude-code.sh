@@ -21,9 +21,14 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+OS="$(uname -s)"
 CLAUDE_DIR="$HOME/.claude"
 CODEX_DIR="$HOME/.codex"
 OPENCODE_DIR="$HOME/.config/opencode"
+
+if [ "$OS" = "Darwin" ]; then
+    PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+fi
 
 step() {
     echo "==> $1"
@@ -38,24 +43,73 @@ link_file() {
     done_step "linked $(basename "$2")"
 }
 
+require_supported_os() {
+    case "$OS" in
+        Darwin|Linux) ;;
+        *)
+            echo "Unsupported OS: $OS"
+            exit 1
+            ;;
+    esac
+}
+
+ensure_homebrew() {
+    if command -v brew &>/dev/null; then
+        done_step "Homebrew already installed"
+        return
+    fi
+
+    step "Installing Homebrew"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    if [ -x /opt/homebrew/bin/brew ]; then
+        PATH="/opt/homebrew/bin:$PATH"
+    elif [ -x /usr/local/bin/brew ]; then
+        PATH="/usr/local/bin:$PATH"
+    fi
+
+    done_step "installed Homebrew"
+}
+
+install_nodejs() {
+    case "$OS" in
+        Darwin)
+            step "Ensuring Homebrew is installed"
+            ensure_homebrew
+
+            step "Installing Node.js"
+            brew install node
+            done_step "installed Node.js"
+            ;;
+        Linux)
+            step "Installing Node.js"
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo bash -
+            sudo apt install -y nodejs
+            done_step "installed Node.js"
+            ;;
+    esac
+}
+
 ensure_node_and_npm() {
     step "Ensuring Node.js is installed"
     if command -v node &>/dev/null; then
         done_step "Node.js already installed"
     else
-        step "Installing Node.js"
-        curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo bash -
-        sudo apt install -y nodejs
-        done_step "installed Node.js"
+        install_nodejs
     fi
 
     step "Ensuring npm is installed"
     if command -v npm &>/dev/null; then
         done_step "npm already installed"
     else
-        step "Installing npm"
-        sudo apt install -y npm
-        done_step "installed npm"
+        install_nodejs
+
+        if command -v npm &>/dev/null; then
+            done_step "npm installed with Node.js"
+        else
+            echo "npm was not found after installing Node.js"
+            exit 1
+        fi
     fi
 }
 
@@ -91,7 +145,14 @@ install_codex() {
         done_step "Codex CLI already installed"
     else
         step "Installing Codex CLI"
-        sudo npm install -g @openai/codex
+        case "$OS" in
+            Darwin)
+                npm install -g @openai/codex
+                ;;
+            Linux)
+                sudo npm install -g @openai/codex
+                ;;
+        esac
         done_step "installed Codex CLI"
     fi
 
@@ -142,6 +203,8 @@ print_auth_instructions() {
 INSTALL_CLAUDE=0
 INSTALL_CODEX=0
 INSTALL_OPENCODE=0
+
+require_supported_os
 
 if [ "$#" -eq 0 ]; then
     echo "Choose what to install:"

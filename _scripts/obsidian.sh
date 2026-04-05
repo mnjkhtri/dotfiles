@@ -16,7 +16,12 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+OS="$(uname -s)"
 SUPPORTED_LINUX_ARCHES="amd64 arm64"
+
+if [ "$OS" = "Darwin" ]; then
+    PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+fi
 
 step() {
     echo "==> $1"
@@ -47,23 +52,35 @@ step "Ensuring Obsidian is installed"
 if command -v obsidian &>/dev/null; then
     done_step "Obsidian already installed"
 else
-    ARCH="$(dpkg --print-architecture)"
-    case "$ARCH" in
-        amd64|arm64) ;;
+    case "$OS" in
+        Darwin)
+            step "Installing Obsidian"
+            brew install --cask obsidian
+            ;;
+        Linux)
+            ARCH="$(dpkg --print-architecture)"
+            case "$ARCH" in
+                amd64|arm64) ;;
+                *)
+                    echo "Unsupported architecture for automatic Obsidian install: $ARCH"
+                    echo "Supported Linux architectures: $SUPPORTED_LINUX_ARCHES"
+                    exit 1
+                    ;;
+            esac
+
+            step "Installing Obsidian"
+            LATEST_TAG="$(curl -fsSL https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | grep -o '"tag_name": "v[^"]*"' | grep -o 'v[^"]*')"
+            VERSION="${LATEST_TAG#v}"
+            DEB_PATH="/tmp/obsidian.deb"
+            wget -qO "$DEB_PATH" "https://github.com/obsidianmd/obsidian-releases/releases/download/${LATEST_TAG}/obsidian_${VERSION}_${ARCH}.deb"
+            sudo apt install -y "$DEB_PATH"
+            rm -f "$DEB_PATH"
+            ;;
         *)
-            echo "Unsupported architecture for automatic Obsidian install: $ARCH"
-    echo "Supported Linux architectures: $SUPPORTED_LINUX_ARCHES"
+            echo "Unsupported OS: $OS"
             exit 1
             ;;
     esac
-
-    step "Installing Obsidian"
-    LATEST_TAG="$(curl -fsSL https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | grep -o '"tag_name": "v[^"]*"' | grep -o 'v[^"]*')"
-    VERSION="${LATEST_TAG#v}"
-    DEB_PATH="/tmp/obsidian.deb"
-    wget -qO "$DEB_PATH" "https://github.com/obsidianmd/obsidian-releases/releases/download/${LATEST_TAG}/obsidian_${VERSION}_${ARCH}.deb"
-    sudo apt install -y "$DEB_PATH"
-    rm -f "$DEB_PATH"
     done_step "installed Obsidian"
 fi
 

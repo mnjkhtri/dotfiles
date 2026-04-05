@@ -12,15 +12,15 @@ Tested:
 
 - Linux: Debian/Ubuntu-style systems with `apt`
 - Linux architectures: `amd64`, `arm64` where the installer explicitly checks arch
-- macOS: supported by some scripts, currently confirmed in-script for `git`, `vscode`, and `claude-code`
+- macOS: supported for `git` and `obsidian`
 
 Current script support:
 
 - `_scripts/git.sh`: Linux and macOS
 - `_scripts/tmux.sh`: Linux only
-- `_scripts/vscode.sh`: Linux and macOS
-- `_scripts/claude-code.sh`: Linux and macOS
-- `_scripts/obsidian.sh`: Linux only, `amd64` and `arm64`
+- `_scripts/vscode.sh`: Linux only, `amd64` and `arm64`
+- `_scripts/claude-code.sh`: Linux only
+- `_scripts/obsidian.sh`: Linux and macOS, with Linux auto-install on `amd64` and `arm64`
 
 If a script does not mention macOS support, assume Linux is the target.
 
@@ -57,7 +57,7 @@ Linux only.
 
 ### 3. VS Code
 
-Linux and macOS.
+Linux only. Automatic install currently supports `amd64` and `arm64`.
 
 ```bash
 ./_scripts/vscode.sh
@@ -65,17 +65,15 @@ Linux and macOS.
 
 ### 4. Claude Code / Codex / OpenCode
 
-Linux and macOS.
+Linux only.
 
 ```bash
 ./_scripts/claude-code.sh
 ```
 
-This installer now supports both Linux and macOS. On macOS it uses Homebrew to install Node.js when needed.
-
 ### 5. Obsidian
 
-Linux only. Automatic install currently supports `amd64` and `arm64`.
+Linux and macOS. Linux automatic install currently supports `amd64` and `arm64`.
 
 ```bash
 ./_scripts/obsidian.sh

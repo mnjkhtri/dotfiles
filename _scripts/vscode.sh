@@ -16,7 +16,6 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
-OS="$(uname -s)"
 SUPPORTED_LINUX_ARCHES="amd64 arm64"
 
 step() {
@@ -49,12 +48,7 @@ pin_to_gnome_dash() {
     fi
 }
 
-# Resolve VSCode user config path per OS
-case "$OS" in
-    Darwin) VSCODE_USER="$HOME/Library/Application Support/Code/User" ;;
-    Linux)  VSCODE_USER="$HOME/.config/Code/User" ;;
-    *)      echo "Unsupported OS: $OS"; exit 1 ;;
-esac
+VSCODE_USER="$HOME/.config/Code/User"
 
 # Install VS Code before syncing extensions or settings.
 step "Ensuring VS Code is installed"
@@ -62,25 +56,18 @@ if command -v code &>/dev/null; then
     done_step "VS Code already installed"
 else
     step "Installing VS Code"
-    case "$OS" in
-        Darwin)
-            brew install --cask visual-studio-code
-            ;;
-        Linux)
-            ARCH=$(dpkg --print-architecture)
-            case "$ARCH" in
-                amd64|arm64) ;;
-                *)
-                    echo "Unsupported architecture for automatic VS Code install: $ARCH"
-                    echo "Supported Linux architectures: $SUPPORTED_LINUX_ARCHES"
-                    exit 1
-                    ;;
-            esac
-            wget -qO /tmp/vscode.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
-            sudo dpkg -i /tmp/vscode.deb || sudo apt install -f -y
-            rm -f /tmp/vscode.deb
+    ARCH=$(dpkg --print-architecture)
+    case "$ARCH" in
+        amd64|arm64) ;;
+        *)
+            echo "Unsupported architecture for automatic VS Code install: $ARCH"
+            echo "Supported Linux architectures: $SUPPORTED_LINUX_ARCHES"
+            exit 1
             ;;
     esac
+    wget -qO /tmp/vscode.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
+    sudo dpkg -i /tmp/vscode.deb || sudo apt install -f -y
+    rm -f /tmp/vscode.deb
     done_step "installed VS Code"
 fi
 

@@ -8,3 +8,6 @@ default_permissions = "no-self-edit"
 
 [permissions.no-self-edit.filesystem.":project_roots"]
 "." = "write"
+
+[projects."/home/mike/dotfiles"]
+trust_level = "trusted"

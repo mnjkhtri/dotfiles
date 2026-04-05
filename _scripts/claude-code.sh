@@ -8,9 +8,11 @@ set -euo pipefail
 #   1. Lets you choose Claude, Codex, OpenCode, or all
 #   2. Installs selected tools if not already installed
 #   3. Symlinks tracked config into place for the selected tools:
-#        claude-code/claude/CLAUDE.md      → ~/.claude/CLAUDE.md
+#        claude-code/shared/AI.md          → ~/.claude/CLAUDE.md
 #        claude-code/claude/settings.json  → ~/.claude/settings.json
+#        claude-code/shared/AI.md          → ~/.codex/AGENTS.md
 #        claude-code/codex/config.toml     → ~/.codex/config.toml
+#        claude-code/shared/AI.md          → ~/.config/opencode/AGENTS.md
 #        claude-code/opencode/config.json  → ~/.config/opencode/config.json
 #
 # Usage:
@@ -25,6 +27,7 @@ OS="$(uname -s)"
 CLAUDE_DIR="$HOME/.claude"
 CODEX_DIR="$HOME/.codex"
 OPENCODE_DIR="$HOME/.config/opencode"
+SHARED_INSTRUCTIONS="$DOTFILES/claude-code/shared/AI.md"
 
 if [ "$OS" = "Darwin" ]; then
     PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
@@ -117,9 +120,9 @@ install_claude() {
     mkdir -p "$CLAUDE_DIR"
     done_step "prepared Claude config directory"
 
-    if [ -f "$DOTFILES/claude-code/claude/CLAUDE.md" ]; then
+    if [ -f "$SHARED_INSTRUCTIONS" ]; then
         step "Linking Claude instructions"
-        link_file "$DOTFILES/claude-code/claude/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
+        link_file "$SHARED_INSTRUCTIONS" "$CLAUDE_DIR/CLAUDE.md"
     fi
 
     if [ -f "$DOTFILES/claude-code/claude/settings.json" ]; then
@@ -154,6 +157,11 @@ install_codex() {
         step "Linking Codex config"
         link_file "$DOTFILES/claude-code/codex/config.toml" "$CODEX_DIR/config.toml"
     fi
+
+    if [ -f "$SHARED_INSTRUCTIONS" ]; then
+        step "Linking Codex global instructions"
+        link_file "$SHARED_INSTRUCTIONS" "$CODEX_DIR/AGENTS.md"
+    fi
 }
 
 install_opencode() {
@@ -174,6 +182,11 @@ install_opencode() {
     if [ -f "$DOTFILES/claude-code/opencode/config.json" ]; then
         step "Linking OpenCode config"
         link_file "$DOTFILES/claude-code/opencode/config.json" "$OPENCODE_DIR/config.json"
+    fi
+
+    if [ -f "$SHARED_INSTRUCTIONS" ]; then
+        step "Linking OpenCode global instructions"
+        link_file "$SHARED_INSTRUCTIONS" "$OPENCODE_DIR/AGENTS.md"
     fi
 }
 

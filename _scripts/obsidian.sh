@@ -1,103 +1,43 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
-# ---------------------------------------------------------------------------
-# _scripts/obsidian.sh
-#
-# Sets up Obsidian:
-#   1. Installs Obsidian if not already installed
-#   2. Optionally syncs tracked vault config into a target vault:
-#        obsidian/.obsidian/* → <vault>/.obsidian/
-#        obsidian/.obsidian.vimrc → <vault>/.obsidian.vimrc
-#
-# Usage:
-#   ./_scripts/obsidian.sh
-#   ./_scripts/obsidian.sh /path/to/vault
-# ---------------------------------------------------------------------------
-
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
-OS="$(uname -s)"
-SUPPORTED_LINUX_ARCHES="amd64 arm64"
 
-if [ "$OS" = "Darwin" ]; then
-    PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-fi
-
-step() {
-    echo "==> $1"
-}
-
-done_step() {
-    echo "[done] $1"
-}
-
-require_homebrew() {
-    if command -v brew &>/dev/null; then
-        return
-    fi
-
-    echo "Homebrew is required on macOS but was not found."
-    echo "Install it first:"
-    echo '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
-    exit 1
-}
-
-pin_to_gnome_dash() {
-    local desktop_file="$1"
-
-    if ! command -v gsettings &>/dev/null; then
-        return
-    fi
-
-    CURRENT_FAVORITES="$(gsettings get org.gnome.shell favorite-apps)"
-    if echo "$CURRENT_FAVORITES" | grep -q "$desktop_file"; then
-        done_step "$(basename "$desktop_file" .desktop) already pinned to dash"
-    else
-        gsettings set org.gnome.shell favorite-apps \
-            "$(echo "$CURRENT_FAVORITES" | sed "s/]$/, '$desktop_file']/")"
-        done_step "pinned $(basename "$desktop_file" .desktop) to GNOME dash"
-    fi
-}
-
-step "Ensuring Obsidian is installed"
+echo "==> Ensuring Obsidian is installed"
 if command -v obsidian &>/dev/null; then
-    done_step "Obsidian already installed"
+    echo "[done] Obsidian already installed"
 else
-    case "$OS" in
-        Darwin)
-            require_homebrew
-            step "Installing Obsidian"
-            brew install --cask obsidian
-            ;;
-        Linux)
-            ARCH="$(dpkg --print-architecture)"
-            case "$ARCH" in
-                amd64|arm64) ;;
-                *)
-                    echo "Unsupported architecture for automatic Obsidian install: $ARCH"
-                    echo "Supported Linux architectures: $SUPPORTED_LINUX_ARCHES"
-                    exit 1
-                    ;;
-            esac
-
-            step "Installing Obsidian"
-            LATEST_TAG="$(curl -fsSL https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | grep -o '"tag_name": "v[^"]*"' | grep -o 'v[^"]*')"
-            VERSION="${LATEST_TAG#v}"
-            DEB_PATH="/tmp/obsidian.deb"
-            wget -qO "$DEB_PATH" "https://github.com/obsidianmd/obsidian-releases/releases/download/${LATEST_TAG}/obsidian_${VERSION}_${ARCH}.deb"
-            sudo apt install -y "$DEB_PATH"
-            rm -f "$DEB_PATH"
-            ;;
+    ARCH="$(dpkg --print-architecture)"
+    case "$ARCH" in
+        amd64|arm64) ;;
         *)
-            echo "Unsupported OS: $OS"
+            echo "Unsupported architecture for automatic Obsidian install: $ARCH"
             exit 1
             ;;
     esac
-    done_step "installed Obsidian"
+
+    echo "==> Installing Obsidian"
+    LATEST_TAG="$(curl -fsSL https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | grep -o '"tag_name": "v[^"]*"' | grep -o 'v[^"]*')"
+    VERSION="${LATEST_TAG#v}"
+    DEB_PATH="/tmp/obsidian.deb"
+    wget -qO "$DEB_PATH" "https://github.com/obsidianmd/obsidian-releases/releases/download/${LATEST_TAG}/obsidian_${VERSION}_${ARCH}.deb"
+    sudo apt install -y "$DEB_PATH"
+    rm -f "$DEB_PATH"
+    echo "[done] installed Obsidian"
 fi
 
-step "Pinning Obsidian to GNOME dash"
-pin_to_gnome_dash "obsidian.desktop"
+if command -v gsettings &>/dev/null; then
+    echo "==> Pinning Obsidian to GNOME dash"
+    current_favorites="$(gsettings get org.gnome.shell favorite-apps)"
+    if printf '%s\n' "$current_favorites" | grep -q "obsidian.desktop"; then
+        echo "[done] obsidian already pinned to dash"
+    elif [ "$current_favorites" = "[]" ]; then
+        gsettings set org.gnome.shell favorite-apps "['obsidian.desktop']"
+        echo "[done] pinned obsidian to GNOME dash"
+    else
+        gsettings set org.gnome.shell favorite-apps "${current_favorites%]}, 'obsidian.desktop']"
+        echo "[done] pinned obsidian to GNOME dash"
+    fi
+fi
 
 if [ "${1:-}" != "" ]; then
     VAULT_PATH="$1"
@@ -105,18 +45,18 @@ if [ "${1:-}" != "" ]; then
     TARGET_DIR="$VAULT_PATH/.obsidian"
 
     mkdir -p "$TARGET_DIR"
-    done_step "prepared vault config directory"
+    echo "[done] prepared vault config directory"
 
     if [ -d "$TEMPLATE_DIR" ]; then
-        step "Syncing Obsidian vault config"
+        echo "==> Syncing Obsidian vault config"
         cp -a "$TEMPLATE_DIR/." "$TARGET_DIR/"
-        done_step "synced vault config"
+        echo "[done] synced vault config"
     fi
 
     if [ -f "$DOTFILES/obsidian/.obsidian.vimrc" ]; then
-        step "Syncing Obsidian vim config"
+        echo "==> Syncing Obsidian vim config"
         cp -f "$DOTFILES/obsidian/.obsidian.vimrc" "$VAULT_PATH/.obsidian.vimrc"
-        done_step "synced Obsidian vim config"
+        echo "[done] synced Obsidian vim config"
     fi
 
     if [ -f "$TARGET_DIR/community-plugins.json" ]; then

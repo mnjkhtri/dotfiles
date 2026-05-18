@@ -60,6 +60,17 @@ pin_to_gnome_dash() {
 }
 
 VSCODE_USER="$HOME/.config/Code/User"
+PROFILE="${1:-python}"
+
+case "$PROFILE" in
+    python|cpp|tex) ;;
+    *)
+        echo "Usage: ./_scripts/vscode.sh [python|cpp|tex]"
+        exit 1
+        ;;
+esac
+
+PROFILE_DIR="$DOTFILES/vscode/$PROFILE"
 
 require_supported_os
 
@@ -84,7 +95,7 @@ else
     done_step "installed VS Code"
 fi
 
-if [ -f "$DOTFILES/vscode/extensions.txt" ]; then
+if [ -f "$PROFILE_DIR/extensions.txt" ]; then
     step "Syncing VS Code extensions"
     # Read desired extensions from file (lowercase for comparison)
     desired=()
@@ -92,7 +103,7 @@ if [ -f "$DOTFILES/vscode/extensions.txt" ]; then
         [ -z "$ext" ] && continue
         [[ "$ext" == \#* ]] && continue
         desired+=("$(echo "$ext" | tr '[:upper:]' '[:lower:]')")
-    done < "$DOTFILES/vscode/extensions.txt"
+    done < "$PROFILE_DIR/extensions.txt"
 
     # Get currently installed extensions (lowercase for comparison)
     installed=()
@@ -124,7 +135,7 @@ fi
 mkdir -p "$VSCODE_USER"
 done_step "prepared VS Code settings directory"
 step "Linking VS Code settings"
-link_file "$DOTFILES/vscode/settings.json" "$VSCODE_USER/settings.json"
+link_file "$PROFILE_DIR/settings.json" "$VSCODE_USER/settings.json"
 
 step "Pinning VS Code to GNOME dash"
 pin_to_gnome_dash "code.desktop"

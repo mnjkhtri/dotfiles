@@ -1,0 +1,3 @@
+vscodevim.vim
+usernamehw.errorlens
+james-yu.latex-workshop

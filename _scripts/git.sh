@@ -1,57 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ---------------------------------------------------------------------------
-# _scripts/git.sh
-#
-# Sets up git configuration:
-#   1. Asks for your name and email (hit enter to keep current value)
-#   2. Writes them into ~/.gitconfig.local
-#   3. Symlinks into home directory:
-#        git/.gitconfig        → ~/.gitconfig
-#        git/.gitignore_global → ~/.gitignore_global
-#
-# Usage:
-#   ./_scripts/git.sh
-# ---------------------------------------------------------------------------
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
 LOCAL="$HOME/.gitconfig.local"
-OS="$(uname -s)"
-
-if [ "$OS" = "Darwin" ]; then
-    PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-fi
-
-step() {
-    echo "==> $1"
-}
-
-done_step() {
-    echo "[done] $1"
-}
-
-link_file() {
-    ln -sf "$1" "$2"
-    done_step "linked $(basename "$2")"
-}
-
-require_homebrew() {
-    if command -v brew &>/dev/null; then
-        return
-    fi
-
-    echo "Homebrew is required on macOS but was not found."
-    echo "Install it first:"
-    echo '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
-    exit 1
-}
 
 current_name=$(git config -f "$LOCAL" user.name 2>/dev/null || echo "")
 current_email=$(git config -f "$LOCAL" user.email 2>/dev/null || echo "")
-
-# Prompt for git identity and persist it to the local include file.
-step "Configuring git identity"
+echo "==> Configuring git identity"
 if [ -n "$current_name" ]; then
     read -rp "Git name [$current_name]: " name
     name="${name:-$current_name}"
@@ -70,27 +26,18 @@ fi
 
 git config -f "$LOCAL" user.name "$name"
 git config -f "$LOCAL" user.email "$email"
-done_step "saved identity to $LOCAL"
-
-# GitHub CLI (for auth — password auth not supported by GitHub)
-step "Ensuring GitHub CLI is installed"
+echo "[done] saved identity to $LOCAL"
+echo "==> Ensuring GitHub CLI is installed"
 if command -v gh &>/dev/null; then
-    done_step "gh already installed"
+    echo "[done] gh already installed"
 else
-    step "Installing gh"
-    case "$OS" in
-        Darwin)
-            require_homebrew
-            brew install gh
-            ;;
-        Linux)  sudo apt install -y gh ;;
-        *) echo "Unsupported OS: $OS. Install gh manually: https://cli.github.com"; exit 1 ;;
-    esac
-    done_step "installed gh"
+    echo "==> Installing gh"
+    sudo apt install -y gh
+    echo "[done] installed gh"
 fi
 echo "ACTION: run 'gh auth login' to authenticate with GitHub"
-
-# Link tracked git config into the home directory.
-step "Linking git config files"
-link_file "$DOTFILES/git/.gitconfig" "$HOME/.gitconfig"
-link_file "$DOTFILES/git/.gitignore_global" "$HOME/.gitignore_global"
+echo "==> Linking git config files"
+ln -sf "$DOTFILES/git/.gitconfig" "$HOME/.gitconfig"
+echo "[done] linked .gitconfig"
+ln -sf "$DOTFILES/git/.gitignore_global" "$HOME/.gitignore_global"
+echo "[done] linked .gitignore_global"

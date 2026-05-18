@@ -1,12 +1,8 @@
 # dotfiles
 
-My personal development environment setup. Clone the repo and run the scripts to get up and running on a fresh machine.
+My personal Debian/Ubuntu dotfiles. Clone the repo and run the scripts you want on a fresh Linux machine.
 
 ## Setup
-
-This repo is primarily built around Debian/Ubuntu-style Linux systems with `apt`.
-
-### Linux
 
 ```bash
 sudo apt update
@@ -14,31 +10,6 @@ sudo apt install -y git curl wget
 git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
-
-### macOS
-
-Homebrew is required for the macOS-supported scripts (`git`, `claude-code`, and `obsidian`).
-
-```bash
-command -v brew >/dev/null 2>&1 || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew install git
-git clone https://github.com/mnjkhtri/dotfiles.git ~/dotfiles
-cd ~/dotfiles
-```
-
-## Platform Support
-
-Support is based on the current script behavior.
-
-| Script | Linux `amd64` | Linux `arm64` | macOS |
-| --- | --- | --- | --- |
-| `_scripts/git.sh` | ✅ | ✅ | ✅ |
-| `_scripts/tmux.sh` | ✅ | ✅ | ❌ |
-| `_scripts/vscode.sh` | ✅ | ✅ | ❌ |
-| `_scripts/claude-code.sh` | ✅ | ✅ | ✅ |
-| `_scripts/obsidian.sh` | ✅ | ✅ | ✅ |
-
-`Linux` here means Debian/Ubuntu-style systems with `apt`; `✅` means supported and `❌` means not supported.
 
 ## Install
 
@@ -49,12 +20,10 @@ Support is based on the current script behavior.
 gh auth login
 ```
 
-### 2. Shell + Tmux + Kitty
+### 2. Tmux + Kitty
 
 Installs and links:
 
-- fish
-- starship
 - tmux
 - kitty
 
@@ -68,10 +37,10 @@ Installs and links:
 ./_scripts/vscode.sh
 ```
 
-### 4. Claude Code / Codex / OpenCode
+### 4. OpenCode
 
 ```bash
-./_scripts/claude-code.sh
+./_scripts/opencode.sh
 ```
 
 ### 5. Obsidian

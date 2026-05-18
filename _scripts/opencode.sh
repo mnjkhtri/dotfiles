@@ -36,9 +36,9 @@ fi
 
 echo "==> Linking OpenCode config"
 mkdir -p "$OPENCODE_DIR"
-ln -sf "$DOTFILES/opencode/config.json" "$OPENCODE_DIR/config.json"
+ln -sf "$DOTFILES/opencode/opencode.json" "$OPENCODE_DIR/opencode.json"
 ln -sf "$DOTFILES/opencode/AGENTS.md" "$OPENCODE_DIR/AGENTS.md"
-echo "[done] linked config.json and AGENTS.md"
+echo "[done] linked opencode.json and AGENTS.md"
 
 echo ""
 echo "OpenCode is ready: opencode"

@@ -24,18 +24,3 @@ status_line = ["model", "context-remaining", "git-branch"]
 [sandbox_workspace_write]
 network_access = false
 writable_roots = []
-
-[projects."/home/mike/kernel-oops"]
-trust_level = "trusted"
-
-[projects."/home/mike/Desktop/my-knowledge-base"]
-trust_level = "trusted"
-
-[projects."/home/mike/Desktop/linux-kernel-development"]
-trust_level = "trusted"
-
-[projects."/home/mike/Desktop/kernel-oops"]
-trust_level = "trusted"
-
-[projects."/home/mike/dotfiles"]
-trust_level = "trusted"

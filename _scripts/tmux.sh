@@ -3,8 +3,8 @@ set -euo pipefail
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
 KITTY_CONFIG="$HOME/.config/kitty"
 
-echo "==> Installing tmux, xclip, and kitty"
-sudo apt install -y tmux xclip kitty
+echo "==> Installing tmux and kitty"
+sudo apt install -y tmux kitty
 
 echo "==> Linking tmux config"
 ln -sf "$DOTFILES/tmux/tmux/.tmux.conf" "$HOME/.tmux.conf"

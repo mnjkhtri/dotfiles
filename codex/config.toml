@@ -1,15 +1,11 @@
 #:schema https://developers.openai.com/codex/config-schema.json
 
-model = "gpt-5.6-sol"
 model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "high"
 personality = "pragmatic"
 
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
-web_search = "cached"
-
-file_opener = "vscode"
 project_doc_max_bytes = 65536
 
 [history]
@@ -19,8 +15,6 @@ max_bytes = 10485760
 [tui]
 notifications = ["agent-turn-complete", "approval-requested"]
 notification_condition = "unfocused"
-status_line = ["model", "context-remaining", "git-branch"]
-
-[sandbox_workspace_write]
-network_access = false
-writable_roots = []
+theme = "catppuccin-mocha"
+status_line_use_colors = true
+status_line = []

@@ -3,8 +3,14 @@ set -euo pipefail
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
 KITTY_CONFIG="$HOME/.config/kitty"
 
-echo "==> Installing tmux and kitty"
-sudo apt install -y tmux kitty
+echo "==> Installing terminal tools"
+sudo apt install -y \
+    ca-certificates \
+    curl \
+    fonts-jetbrains-mono \
+    git \
+    kitty \
+    tmux
 
 echo "==> Linking tmux config"
 ln -sf "$DOTFILES/tmux/tmux/.tmux.conf" "$HOME/.tmux.conf"
@@ -48,4 +54,4 @@ if command -v gsettings &>/dev/null; then
     fi
 fi
 
-echo "[done] tmux and kitty setup complete"
+echo "[done] terminal setup complete"

@@ -1,19 +1,11 @@
-# vim:
-
-vscodevim.vim
-
-# general:
-
-usernamehw.errorlens
-
-# python specific:
-
+charliermarsh.ruff
+james-yu.latex-workshop
 ms-python.debugpy
 ms-python.python
 ms-python.vscode-pylance
 ms-python.vscode-python-envs
-charliermarsh.ruff
-
-# latex:
-
-james-yu.latex-workshop
+ms-vscode.cmake-tools
+ms-vscode.cpp-devtools
+ms-vscode.cpptools
+usernamehw.errorlens
+vscodevim.vim

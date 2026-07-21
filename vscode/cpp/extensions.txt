@@ -1,5 +1,0 @@
-vscodevim.vim
-usernamehw.errorlens
-ms-vscode.cpptools
-ms-vscode.cmake-tools
-ms-vscode.makefile-tools

@@ -27,6 +27,7 @@ done_step() {
     echo "[done] $1"
 }
 
+
 link_file() {
     ln -sf "$1" "$2"
     done_step "linked $(basename "$2")"
@@ -60,17 +61,8 @@ pin_to_gnome_dash() {
 }
 
 VSCODE_USER="$HOME/.config/Code/User"
-PROFILE="${1:-python}"
-
-case "$PROFILE" in
-    python|cpp|tex) ;;
-    *)
-        echo "Usage: ./_scripts/vscode.sh [python|cpp|tex]"
-        exit 1
-        ;;
-esac
-
-PROFILE_DIR="$DOTFILES/vscode/$PROFILE"
+EXTENSIONS_FILE="$DOTFILES/vscode/extensions.txt"
+SETTINGS_FILE="$DOTFILES/vscode/settings.json"
 
 require_supported_os
 
@@ -95,7 +87,7 @@ else
     done_step "installed VS Code"
 fi
 
-if [ -f "$PROFILE_DIR/extensions.txt" ]; then
+if [ -f "$EXTENSIONS_FILE" ]; then
     step "Syncing VS Code extensions"
     # Read desired extensions from file (lowercase for comparison)
     desired=()
@@ -103,7 +95,7 @@ if [ -f "$PROFILE_DIR/extensions.txt" ]; then
         [ -z "$ext" ] && continue
         [[ "$ext" == \#* ]] && continue
         desired+=("$(echo "$ext" | tr '[:upper:]' '[:lower:]')")
-    done < "$PROFILE_DIR/extensions.txt"
+    done < "$EXTENSIONS_FILE"
 
     # Get currently installed extensions (lowercase for comparison)
     installed=()
@@ -120,6 +112,12 @@ if [ -f "$PROFILE_DIR/extensions.txt" ]; then
         fi
     done
 
+    # Refresh after installs so transitive additions are also checked.
+    installed=()
+    while IFS= read -r ext; do
+        installed+=("$(echo "$ext" | tr '[:upper:]' '[:lower:]')")
+    done < <(code --list-extensions)
+
     # Remove extras
     for ext in "${installed[@]}"; do
         if ! printf '%s\n' "${desired[@]}" | grep -qx "$ext"; then
@@ -135,7 +133,7 @@ fi
 mkdir -p "$VSCODE_USER"
 done_step "prepared VS Code settings directory"
 step "Linking VS Code settings"
-link_file "$PROFILE_DIR/settings.json" "$VSCODE_USER/settings.json"
+link_file "$SETTINGS_FILE" "$VSCODE_USER/settings.json"
 
 step "Pinning VS Code to GNOME dash"
 pin_to_gnome_dash "code.desktop"

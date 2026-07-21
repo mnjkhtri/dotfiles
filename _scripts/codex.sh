@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
 CODEX_CONFIG_DIR="${CODEX_HOME:-$HOME/.codex}"
 CODEX_AGENTS_SOURCE="$DOTFILES/codex/AGENTS.md"

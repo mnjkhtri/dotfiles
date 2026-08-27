@@ -1,12 +1,14 @@
 #:schema https://developers.openai.com/codex/config-schema.json
 
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 personality = "pragmatic"
 
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 project_doc_max_bytes = 65536
+model = "gpt-5.6-sol"
+approvals_reviewer = "auto_review"
 
 [history]
 persistence = "save-all"
@@ -21,4 +23,10 @@ status_line = []
 trust_level = "trusted"
 
 [projects."/home/mike/Desktop/kernel-oops"]
+trust_level = "trusted"
+
+[projects."/home/mike/Desktop/Lorefold"]
+trust_level = "trusted"
+
+[projects."/home/mike/Desktop"]
 trust_level = "trusted"
